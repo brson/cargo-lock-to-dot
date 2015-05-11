@@ -11,13 +11,14 @@ if len(sys.argv) > 2:
         interesting_crates = maybe_interesting[14:].split(",")
 
 # Map from crate name to list of crate names
-dep_vec = [ ]
+dep_vec = []
 
 current_crate = None
 scanning_deps = False
 current_deps = []
 root = None
 scanning_for_root = False
+
 
 def commit():
     global current_deps, current_crate, scanning_deps, root, scanning_for_root, dep_vec
@@ -57,23 +58,24 @@ with open(lockfile) as f:
             current_deps += [line]
     commit()
 
-print "digraph " + root + " {"
+root = root.replace("-", "_")
+print("digraph " + root + " {")
 
 for (crate, deps) in dep_vec:
     if crate == root:
-        print "  " + crate + " [root=true]"
-        print "  " + crate + " [fillcolor=red]"
-        print "  " + crate + " [fontcolor=white]"
-        print "  " + crate + " [style=filled]"
+        print("  " + crate + " [root=true]")
+        print("  " + crate + " [fillcolor=red]")
+        print("  " + crate + " [fontcolor=white]")
+        print("  " + crate + " [style=filled]")
 
     if crate in interesting_crates:
-        print "  " + crate + " [fillcolor=blue]"
-        print "  " + crate + " [fontcolor=white]"
-        print "  " + crate + " [style=filled]"
-            
+        print("  " + crate + " [fillcolor=blue]")
+        print("  " + crate + " [fontcolor=white]")
+        print("  " + crate + " [style=filled]")
+
     for dep in deps:
         crate = crate.replace("-", "_")
         dep = dep.replace("-", "_")
-        print "  " + crate + " -> " + dep + ";"
+        print("  " + crate + " -> " + dep + ";")
 
-print "}"
+print("}")
